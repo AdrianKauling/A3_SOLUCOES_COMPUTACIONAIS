@@ -13,16 +13,8 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        AlunoDao alunoDao = null;
-        TreinoDao treinoDao = null;
-		try {
-			alunoDao = new FabricaDao().fabricaAlunoDao();
-
-	        treinoDao = new FabricaDao().fabricaTreinoDao();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        AlunoDao alunoDao = FabricaDao.fabricaAlunoDao();
+        TreinoDao treinoDao = FabricaDao.fabricaTreinoDao();
         int resposta = 1;
         while (resposta != 0){
             System.out.println("Bem vindo ao LogFit");
@@ -70,35 +62,71 @@ public class Main {
                                System.out.println("Deseja editar o cpf aluno? (s/n)");
                                String editarCPF = scanner.nextLine();
                                if(editarCPF.equals("s") || editarCPF.equals("S")) {
-                            	   System.out.println("CPF do novo aluno");
-                               	   aluno.setCPF(scanner.next());
-                               	   scanner.nextLine(); //descarte de nova linha
+                            	   
+                            	   boolean validaCpf = false;
+                                   String cpf ="";
+                                   
+                                   while(!validaCpf) {
+                                   	System.out.println("CPF novo: {Formato: 000.000.000-00}");
+                                       cpf = scanner.next();
+                                       
+                                       if(Aluno.validaCPF(cpf, alunoDao)) validaCpf = true;
+                                   }
+                               	   aluno.setCPF(cpf);
+                               	   scanner.nextLine();
                                }
                                
                                
                                System.out.println("Deseja editar a data de nascimento aluno? (s/n)");
                                String editarDataNasc = scanner.next();
                                if(editarDataNasc.equals("s") || editarDataNasc.equals("S")) {
-                            	   System.out.println("Data de nascimento do novo aluno:");
-                            	   aluno.setDataNasc(scanner.next());
-                            	   scanner.nextLine(); //descarte de nova linha
+                            	   boolean validaData = false;
+                                   String dataNasc = "";
+                                   
+                                   while (!validaData) {
+                                   	System.out.println("Nova data de nascimento: {Formato: DIA/MÊS/ANO}");
+                                       dataNasc = scanner.next();
+                                       scanner.nextLine();
+                                       
+                                       if(Aluno.validaData(dataNasc)) validaData = true;
+                                   }
+                            	   
+                            	   aluno.setDataNasc(Aluno.formataData(dataNasc));
                                }
                                
                                
                                System.out.println("Deseja alterar o telefone aluno? (s/n)");
                                String editarTelefone = scanner.next();
+                               scanner.nextLine();
                                if(editarTelefone.equals("s") || editarTelefone.equals("S")) {
-                            	   System.out.println("Telefone do novo aluno: ");
-                            	   aluno.setTelefone(scanner.next());
-                            	   scanner.nextLine(); //descarte de nova linha
+                            	   
+                            	   boolean validaTelefone = false;
+                                   String telefone = "";
+                                   
+                                   while (!validaTelefone) {
+                                   	System.out.println("Telefone do Aluno: {Formato: (47) 90000-0000}");
+                                       telefone = scanner.nextLine().trim();
+                                       
+                                       if(Aluno.validaTelefone(telefone)) validaTelefone = true;
+                                   }
+                                   
+                            	   aluno.setTelefone(telefone);
                                }
                                
                                
                                System.out.println("Deseja alterar o email aluno? (s/n)");
                                String editarEmail = scanner.next();
                                if(editarEmail.equals("s") || editarEmail.equals("S")) {
-                            	   System.out.println("Email do novo aluno");
-                            	   aluno.setEmail(scanner.next());
+                            	   boolean validaEmail = false;
+                                   String email = "";
+                                   
+                                   while (!validaEmail) {
+                                   	System.out.println("Novo email: {Formato: exemplo@exemplo.com ou exemplo@exemplo.com.xyz}");
+                                       email = scanner.next();
+                                       
+                                       if(Aluno.validaEmail(email)) validaEmail=true;
+                                   }
+                            	   aluno.setEmail(email);
                                }
 
                                alunoDao.update(aluno);//Fazendo o updtade(metodo do AlunoDao) no objeto aluno que recebe como parametro o objeto novoAluno
@@ -153,18 +181,33 @@ public class Main {
                                 while (!validaData) {
                                 	System.out.println("Data de nascimento do Aluno: {Formato: DIA/MÊS/ANO}");
                                     dataNasc = scanner.next();
+                                    scanner.nextLine();
                                     
-                                    if(Aluno.validaDataInseridaPeloUsuario(dataNasc)) validaData = true;
+                                    if(Aluno.validaData(dataNasc)) validaData = true;
+                                }
+
+                                boolean validaTelefone = false;
+                                String telefone = "";
+                                
+                                while (!validaTelefone) {
+                                	System.out.println("Telefone do Aluno: {Formato: (47) 90000-0000}");
+                                    telefone = scanner.nextLine().trim();
+                                    
+                                    if(Aluno.validaTelefone(telefone)) validaTelefone = true;
                                 }
                                 
-
-                                System.out.println("Telefone do Aluno:");
-                                String telefone = scanner.next();
-
-                                System.out.println("Email do Aluno");
-                                String email = scanner.next();
-                                Aluno novoAluno = new Aluno(nome,cpf,Aluno.formataData(dataNasc),telefone,email); //Cria um objeto novo aluno da classe Aluno com os dados do cadastro
-                                alunoDao.insert(novoAluno);//Aplica o método insert no objeto aluno com parametro o objeto novoAluno
+                                boolean validaEmail = false;
+                                String email = "";
+                                
+                                while (!validaEmail) {
+                                	System.out.println("Email do Aluno: {Formato: exemplo@exemplo.com ou exemplo@exemplo.com.xyz}");
+                                    email = scanner.next();
+                                    
+                                    if(Aluno.validaEmail(email)) validaEmail=true;
+                                }
+                                
+                                Aluno novoAluno = new Aluno(nome,cpf,Aluno.formataData(dataNasc),telefone,email);
+                                alunoDao.insert(novoAluno);
                                 break;
                             } catch (Exception e){
                                 System.out.println("Erro ao cadastrar aluno: " + e.getMessage());
@@ -267,6 +310,13 @@ public class Main {
                         	break;
 		                case 0:
 		                    System.out.println("Saindo...");
+							try {
+								alunoDao.closeConnection();
+								treinoDao.closeConnection();
+							} catch (SQLException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
 		                    scanner.close();
 		                default:
 		                    System.out.println("opção inválida");
@@ -300,7 +350,8 @@ public class Main {
 	            }
 	
 	        } catch (Exception e) {
-	            System.out.println("Erro ao listar alunos: " + e.getMessage());
+	            System.out.println("Erro ao listar alunos: ");
+	            e.printStackTrace();
 	            return -1;
 	        }
 	    }

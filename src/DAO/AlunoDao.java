@@ -8,12 +8,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import BO.Aluno;
+import database.Conexao;
 public class AlunoDao{
 
 	Connection conn;
 	
 	public AlunoDao(Connection conn) {
-		this.conn = conn;;
+		this.conn = conn;
 	}
 
 
@@ -40,6 +41,8 @@ public class AlunoDao{
 				}
 			}catch(SQLException e) {
 				e.printStackTrace();
+			}finally{
+				Conexao.closeStatement(ps);
 			}
 		}else {
 			System.out.println("CPF já cadastrado!");
@@ -50,9 +53,9 @@ public class AlunoDao{
 
 	public void update(Aluno obj) {
 		// TODO Auto-generated method stub
-			
+		PreparedStatement ps = null;
 		try {
-			PreparedStatement ps = null;
+			
 			String sql = "UPDATE Alunos SET nome=?, cpf=?, dataNasc=?, telefone=?, email=? WHERE id=?";
 			ps = this.conn.prepareStatement(sql);
 			ps.setString(1,obj.getNomeAluno());
@@ -71,6 +74,8 @@ public class AlunoDao{
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}finally{
+			Conexao.closeStatement(ps);
 		}
 	}
 
@@ -90,6 +95,8 @@ public class AlunoDao{
 			}
 		}catch(SQLException e) {
 			e.printStackTrace();
+		}finally{
+			Conexao.closeStatement(ps);
 		}
 		
 	}
@@ -115,6 +122,9 @@ public class AlunoDao{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
+		}finally{
+			Conexao.closeStatement(ps);
+			Conexao.closeResultSet(rs);
 		}
 		
 		
@@ -128,19 +138,23 @@ public class AlunoDao{
 		List<Aluno> alunos = new ArrayList<>();
 		try {
 			String sql = "SELECT * FROM ALUNOS";
+			if(this.conn ==null) {
+				System.out.print("ta nulo");
+			}
 			ps = this.conn.prepareStatement(sql);
 			rs = ps.executeQuery();
 			while(rs.next()) {
 				alunos.add(new Aluno(rs.getInt("id"),rs.getString("nome"), rs.getString("cpf"), rs.getString("dataNasc"), rs.getString("telefone"), rs.getString("email")));
 			}
 			
-			return alunos;
-			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return null;
+		}finally{
+			Conexao.closeStatement(ps);
+			Conexao.closeResultSet(rs);
 		}
+		return alunos;
 		
 		
 	}
@@ -165,6 +179,9 @@ public class AlunoDao{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
+		}finally{
+			Conexao.closeStatement(ps);
+			Conexao.closeResultSet(rs);
 		}
 		
 		

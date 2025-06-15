@@ -18,8 +18,8 @@ public class TreinoDao {
 	}
 	
 	public void insert(Treino obj) {
+		PreparedStatement ps = null;
 		try {
-			PreparedStatement ps = null;
 			String sql = "INSERT INTO Treinos (tipoDeTreino, descricao, duracao, dataDeInicio, id_aluno) VALUES (?,?,?,?,?)";
 			ps = this.conn.prepareStatement(sql);
 			ps.setString(1, obj.getTipoTreino());
@@ -36,11 +36,18 @@ public class TreinoDao {
 			}
 		}catch(SQLException e) {
 			e.printStackTrace();
+		}finally{
+			try {
+				if (ps != null) ps.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 	public void update(Treino obj) throws SQLException {
+		PreparedStatement ps = null;
 		try {
-			PreparedStatement ps = null;
 			String sql = "UPDATE Treinos SET tipoDeTreino=?, descricao=?, duracao=?, dataDeInicio=?, id_aluno=? WHERE id=?";
 			ps = this.conn.prepareStatement(sql);
 			ps.setString(1,obj.getTipoTreino());
@@ -58,6 +65,13 @@ public class TreinoDao {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+		}finally{
+			try {
+				if (ps != null) ps.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	};
 	public void deleteByIdAluno(Integer id) {
@@ -74,6 +88,13 @@ public class TreinoDao {
 			}
 		}catch(SQLException e) {
 			e.printStackTrace();
+		}finally{
+			try {
+				if (ps != null) ps.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	};
 	
@@ -99,6 +120,13 @@ public class TreinoDao {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
+		}finally{
+			try {
+				if (psTreino != null) psTreino.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 	
@@ -135,6 +163,14 @@ public class TreinoDao {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
+		}finally{
+			try {
+				if (psTreino != null) psTreino.close();
+				if (psAluno != null) psAluno.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 	
@@ -168,6 +204,13 @@ public class TreinoDao {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
+		}finally{
+			try {
+				if (psTreinos != null) psTreinos.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 	

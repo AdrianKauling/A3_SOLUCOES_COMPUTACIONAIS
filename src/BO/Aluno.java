@@ -17,7 +17,6 @@ public class Aluno {
     private String dataNasc;
     private String telefone;
     private String email;
-    private AlunoDao alunoDao= new FabricaDao().fabricaAlunoDao();
 
     // Construtor
     public Aluno(String nomeAluno, String cpf, String dataNasc, String telefone, String email) throws SQLException {
@@ -36,7 +35,6 @@ public class Aluno {
         this.dataNasc = dataNasc;
         this.telefone = telefone;
         this.email = email;
-        this.alunoDao = new FabricaDao().fabricaAlunoDao();
     }
     
     // Getters e Setters (opcional)
@@ -89,13 +87,6 @@ public class Aluno {
         System.out.println("Aluno: " + nomeAluno + ", CPF: " + cpf);
     }
     
-    public void deletarAluno() {
-    	
-    	this.alunoDao.deleteById(this.idAluno);
-    	
-    	
-    }
-    
     public static boolean validaCPF(String cpf, AlunoDao alunoDao) {
     	String padrao1 = "^[0-9][0-9][0-9].[0-9][0-9][0-9].[0-9][0-9][0-9]-[0-9][0-9]$";
     	Pattern pattern = Pattern.compile(padrao1);
@@ -124,7 +115,7 @@ public class Aluno {
     	return ano+"-"+mes+"-"+dia;
     }
     
-    public static boolean validaDataInseridaPeloUsuario(String data) {
+    public static boolean validaData(String data) {
     	String padrao1 = "^[0-9][0-9]/[0-9][0-9]/[0-9][0-9][0-9][0-9]$";
     	Pattern pattern = Pattern.compile(padrao1);
         Matcher matcher = pattern.matcher(data);
@@ -141,6 +132,37 @@ public class Aluno {
         	return false;
         }
         
+    	
+    	return true;
+    }
+    
+    public static boolean validaTelefone(String telefone) {
+        String padrao1 = "^\\([0-9]{2}\\) 9[0-9]{4}-[0-9]{4}$";
+        Pattern pattern = Pattern.compile(padrao1);
+        Matcher matcher = pattern.matcher(telefone);
+
+        if (!matcher.matches()) {
+            System.out.println("Formato INCORRETO!");
+            System.out.println("Insira o telefone no formato: (47) 90000-0000");
+            return false;
+        }
+
+        return true;
+    }
+    
+    public static boolean validaEmail(String email) {
+    	
+    	String padrao1 = "^.*@.*\\.com$";
+    	String padrao2 = "^.*@.*\\.com\\..*$";
+    	Pattern pattern = Pattern.compile(padrao1);
+    	Pattern pattern2 = Pattern.compile(padrao2);
+    	Matcher matcher = pattern.matcher(email);
+        Matcher matcher2 = pattern2.matcher(email);
+        if(!matcher.matches() && !matcher2.matches()) {
+        	System.out.println("Formato INCORRETO!");
+        	System.out.println("Insira o email no formato: exemplo@exemplo.com");
+        	return false;
+        }
     	
     	return true;
     }
