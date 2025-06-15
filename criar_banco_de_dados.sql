@@ -8,8 +8,6 @@ CREATE DATABASE academia;
 USE academia;
 
 -- Criação da tabela Aluno
-drop table Alunos;
-DROP TABLE Treinos;
 CREATE TABLE Alunos (
     id INT PRIMARY KEY auto_increment,
     nome VARCHAR(100),
